@@ -27,19 +27,25 @@ function countBy(items, groupName) {
 }
 
 function	dominantDir(text) {
-	let	dirs = countBy(text, char => {
-		let c = characterScript(char);
-		return (c ? c.dir : "none");
-	});//.filter(({name}) => name != "none");
-	
-	return (dirs);
-	let	total = dirs.reduce((sum, item) => sum + item.count);
-	if (total === 0)	return ("No scripts found");
+	let	dirs = countBy(text, c => {
+		let script = characterScript(c.codePointAt(0));
+		return (script ? script.direction : "none");
+	}).filter(({name}) => name != "none");
+	console.log("dirs: ", dirs);
 
+	let	total = dirs.reduce((sum, {count}) => sum + count, 0);
+	console.log("total: ", total);
+	if (total === 0)	return ("No scripts found");
+	
+	let res = dirs.map(({name, count}) => {
+		let	ratio = Math.round(count * 100 / total);
+		return (`${name}: ${ratio}%`);
+	}).join("\n");
+
+	return (res);
 }
 
-let	test = "abcdefg";
+console.log(dominantDir("Hey, مساء الخير"));
 
-console.log(dominantDir("hello"));
 
 
